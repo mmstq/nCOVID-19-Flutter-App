@@ -18,4 +18,9 @@ class MiddleWare {
     http.Response userProfile = await _api.getGraphData(country);
     return userProfile;
   }
+
+  Future<dynamic> getStatesData() async {
+    http.Response userProfile = await _api.getStatesData();
+    return userProfile;
+  }
 }

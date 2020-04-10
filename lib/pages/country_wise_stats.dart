@@ -26,8 +26,6 @@ class _CountryStatsState extends State<CountryStats>
   Animation<double> _tween;
   FlutterMoneyFormatter _fmf = FlutterMoneyFormatter(amount: 620000);
 
-  var style = TextStyle(
-      fontFamily: 'Ubuntu', fontSize: 20, fontWeight: FontWeight.w300);
 
   @override
   void initState() {
@@ -43,6 +41,12 @@ class _CountryStatsState extends State<CountryStats>
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       _graphNotifier.getGraphData(widget._model.country.toLowerCase());
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _animationController.dispose();
   }
 
 
@@ -89,9 +93,6 @@ class _CountryStatsState extends State<CountryStats>
                     }
                   });
                   list = list.reversed.toList();
-                  list.forEach((element) {
-                    debugPrint(element.day);
-                  });
 
                   return Container(
                     margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
@@ -128,7 +129,20 @@ class _CountryStatsState extends State<CountryStats>
                   );
 
                 } else
-                  return Container();
+                  return Container(
+                    height: MediaQuery.of(context).size.height / 3,
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.all(10),
+                            height: 40,
+                            width: 40,
+                            child: CircularProgressIndicator(strokeWidth: 1,)),
+                      ],
+                    ),
+                  );
               },
             ),
             SizedBox(height: 10,),

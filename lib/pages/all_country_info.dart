@@ -2,7 +2,8 @@ import 'package:COVID19/api/service.dart';
 import 'package:COVID19/data.dart';
 import 'package:COVID19/models/case_model.dart';
 import 'package:COVID19/notifiers/country_notifier.dart';
-import 'package:COVID19/pages/searchByCountry.dart';
+import 'package:COVID19/pages/country_wise_stats.dart';
+import 'package:COVID19/pages/search_country.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -109,27 +110,19 @@ class _TopCountryState extends State<TopCountry> {
               _list = model.notes;
               india = _list
                   .firstWhere((element) => element.country == 'India');
-            /*if(_sortString == 'country')
-              _list = model.notes.reversed.toList();
-            else*/
-            return ListView.builder(
-              /*separatorBuilder: (c, i) => Container(
-                height: 0.5,
-                color: Colors.grey,
-              ),*/
-              itemCount: _list.length,
 
+            return ListView.builder(
+              itemCount: _list.length,
               itemBuilder: (context, index) {
                 if (index == 0) {
                   return Column(
                     children: <Widget>[
-                      getListItem(context, india, screen, true),
-                      Container(height: 2,width: screen.width,color: Colors.grey.withOpacity(0.3),),
-                      getListItem(context, _list[index], screen, false)
+                      getListItem(context, india, screen),
+                      getListItem(context, _list[index], screen)
                     ],
                   );
                 }else
-                  return getListItem(context, _list[index], screen, false);
+                  return getListItem(context, _list[index], screen);
               },
             );
           },
@@ -138,10 +131,9 @@ class _TopCountryState extends State<TopCountry> {
     );
   }
 
-  Widget getListItem(BuildContext context, CaseModel caseModel, Size screen, bool expanded) {
+  Widget getListItem(BuildContext context, CaseModel caseModel, Size screen) {
 
     return ExpansionTile(
-      initiallyExpanded: expanded,
       title: Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: Row(
@@ -158,6 +150,27 @@ class _TopCountryState extends State<TopCountry> {
               caseModel.country,
               style: style.copyWith(fontWeight: FontWeight.w600,fontSize: 17, color: Colors.grey.shade800),
             ),
+            SizedBox(width: 10,),
+            InkWell(
+              onTap: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>CountryStats(caseModel)));
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3),
+                  border: Border.all(color: Colors.grey.shade300)
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text('curve ', style: TextStyle(color: Colors.black87, fontSize: 12),),
+                    Icon(Icons.show_chart, size: 14, color: Colors.orangeAccent,),
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
@@ -284,11 +297,12 @@ class _TopCountryState extends State<TopCountry> {
                   Text(
                       '${_fmf.copyWith(amount: caseModel.critical.floorToDouble()).output.withoutFractionDigits}'),
                 ],
-              )
+              ),
+
 
             ],
           ),
-        )
+        ),
       ],
     );
   }

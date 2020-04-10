@@ -15,12 +15,13 @@ description: An app to get latest information about COVID-19 Virus
 version: 1.0.2
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   http:
+  webview_flutter: 0.3.19+9
   bezier_chart:
   provider:
   flutter_money_formatter:

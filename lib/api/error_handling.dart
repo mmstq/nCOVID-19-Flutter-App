@@ -19,6 +19,10 @@ class FetchDataException extends CustomException {
   FetchDataException([String message])
       : super(message, "Error During Communication: ");
 }
+class TooManyRequests extends CustomException {
+  TooManyRequests([String message])
+      : super(message, "Too many requests: ");
+}
 
 class UnauthorisedException extends CustomException {
   UnauthorisedException([message]) : super(message, "Unauthorised: ");

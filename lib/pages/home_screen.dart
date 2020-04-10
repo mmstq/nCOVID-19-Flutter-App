@@ -1,15 +1,19 @@
 import 'dart:math';
 import 'package:COVID19/api/service.dart';
 import 'package:COVID19/data.dart';
+import 'package:COVID19/pages/india_map.dart';
+import 'package:COVID19/pages/states_wise_stats.dart';
 import 'package:COVID19/notifiers/headline_notifier.dart';
 import 'package:COVID19/notifiers/homescreen_notifier.dart';
-import 'package:COVID19/pages/countryInfo.dart';
+import 'package:COVID19/pages/about_me.dart';
+import 'package:COVID19/pages/all_country_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -28,21 +32,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Animation<double> _tweenRefresh;
   bool _started = true;
 
-  final list = [
-        'Regularly and thoroughly clean your hands COVIDwith an alcohol-based hand rub or wash them with soap and water.',
-        'Maintain at least 1 metre (3 feet) distance between yourself and anyone who is coughing or sneezing',
-        'Stay home if you feel unwell. If you have a fever, cough and difficulty breathing, seek medical attention and call in advance',
-        'Self-isolate by staying at home if you begin to feel unwell, even with mild symptoms such as headache, low grade fever (37.3 C or above) and slight runny nose, until you recover',
-        '“incubation period” means the time between catching the virus and beginning to have symptoms of the disease. The incubation period for COVID-19 range from 1-14 days',
-
-        'Most people (about 80%) recover from the disease without needing special treatment',
-
-        'Antibiotics do not work against viruses, they only work on bacterial infections. COVID-19 is caused by a virus, so antibiotics do not work.',
-
-        'Only wear a mask if you are ill with COVID-19 symptoms. Disposable face mask can only be used once. If you are not ill or looking after someone who is ill then you are wasting a mask.',
-        "Don'ts\n1. Wearing multiple masks\n2. Taking antibiotics\n3. Touching face",
-        'The virus that causes COVID-19 is mainly transmitted through droplets generated when an infected person coughs, sneezes, or speaks. These droplets are too heavy to hang in the air. They quickly fall on floors or surfaces.',
-  ];
 
   @override
   void initState() {
@@ -63,25 +52,28 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         CurvedAnimation(parent: _tweenRefresh, curve: Curves.linear);
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      _notesNotifier.getAll('all').then((value) async {
-        await Future.delayed(Duration(seconds: 1));
+      _notesNotifier.getAll('all').then((value) {
         _headlineNotifier.getHeadlines();
       });
     });
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _animationController.dispose();
+    _animationControllerRefresh.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final no = Random().nextInt(list.length);
+    final no = Random().nextInt(Data.list.length);
     final screen = MediaQuery.of(context).size;
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => service<HomeNotifier>(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => service<HeadlineNotifier>(),
-        ),
+          create: (_) => service<HomeNotifier>()),
+        ChangeNotifierProvider(create: (_) => service<HeadlineNotifier>()),
       ],
       child: Scaffold(
         body: NestedScrollView(headerSliverBuilder: (context, scrolled) {
@@ -117,15 +109,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         /**/,
                       ),
                       Positioned(
-                          top: 40,
+                          bottom: 10,
                           right: 10,
                           child: AnimatedBuilder(
                             animation: _animationRefresh,
+                            child: Image.asset('asset/refresh.png', height: 25,width: 25,filterQuality: FilterQuality.high,),
                             builder: (context, child) {
                               return Transform.rotate(
                                   angle: _animationRefresh.value * pi * 2*18,
                                   child: GestureDetector(
-                                    child: Image.asset('asset/refresh.png', height: 25,width: 25,),
+                                    child: child,
                                     onTap: () {
                                       _notesNotifier.getAll('all');
                                       _animationController.reset();
@@ -136,6 +129,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   ));
                             },
                           )),
+                      Positioned(
+                        top: 35,
+                        right: 5,
+                        child: InkWell(
+                          child: Container(
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                color: Colors.indigo.shade400.withOpacity(0.4),
+                                borderRadius: BorderRadius.circular(4)),
+                            child: Column(
+                              children: <Widget>[
+                                Icon(Icons.person, color: Colors.white,),
+                                Text('About',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w300))
+                              ],
+                            ),
+                          ),
+                          onTap: (){
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AboutMe()));
+                          },
+                        ),
+                      ),
                       Positioned(
                         bottom: 10,
                         left: 10,
@@ -151,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             },
                             child: Padding(
                               padding: const EdgeInsets.only(left: 3.0),
-                              child: Text(list[no],
+                              child: Text(Data.list[no],
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 14,
@@ -312,38 +330,103 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => TopCountry()));
-                      },
-                      child: Card(
-                        color: Colors.indigo.shade500,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 15),
-                          alignment: Alignment.center,
-                          height: screen.height * 0.06,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                'Country wise stats',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w300),
+                  FittedBox(
+                    child: Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 5, 0, 0),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => TopCountry()));
+                            },
+                            child: Card(
+                              color: Colors.indigo.shade500,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                alignment: Alignment.center,
+                                height: screen.height * 0.06,
+                                width: screen.width*0.3,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    Image.asset('asset/global.png', color: Colors.white,height: 20,width: 20,),
+                                    Text(
+                                      'Affected\ncountries',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              Icon(
-                                Icons.arrow_forward_ios,
-                                color: Colors.white,
-                                size: 15,
-                              )
-                            ],
+                            ),
                           ),
                         ),
-                      ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => StatesInfo()));
+                            },
+                            child: Card(
+                              color: Colors.indigo.shade500,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                alignment: Alignment.center,
+                                height: screen.height * 0.06,
+                                width: screen.width*0.3,
+
+                                child: Text(
+                                  'Indian \nstates tally',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w300),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => CovidMap()));
+                            },
+                            child: Card(
+                              color: Colors.indigo.shade500,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                alignment: Alignment.center,
+                                height: screen.height * 0.06,
+                                width: screen.width*0.3,
+
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    Image.asset('asset/india.png', color: Colors.white, height: 20,width: 20,),
+                                    Text(
+                                      'COVID \nMap',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+
+                      ],
                     ),
                   ),
                   Padding(
