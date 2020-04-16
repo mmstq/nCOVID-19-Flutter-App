@@ -1,6 +1,6 @@
-# Covid19
+# COVID-19
 
-An app to get latest information about COVID-19 Virus
+An android app that shows latest stats about the ongoing nCOVID-19 pandemic.
 
 ![Download APK File](https://github.com/mmstq/nCOVID-19-Flutter-App/blob/master/mmstq.com.covid.apk?raw=true)
 
@@ -15,3 +15,4 @@ Screenshots
 <img src="https://user-images.githubusercontent.com/39179965/79425645-9f950700-7fdf-11ea-8ce1-fdc2cc2c9592.jpg" width="200"/>
 <img src="https://user-images.githubusercontent.com/39179965/79425651-a1f76100-7fdf-11ea-9e26-19ee25a99138.jpg" width="200"/>
 </div>
+# StayHomeStaySafe
