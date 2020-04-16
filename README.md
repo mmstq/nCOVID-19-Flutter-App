@@ -2,6 +2,8 @@
 
 An app to get latest information about COVID-19 Virus
 
+APK Download Link
+
 Screenshots
 <div>
 <img src="https://user-images.githubusercontent.com/39179965/79422773-15e33a80-7fdb-11ea-8907-d231645bcbe7.png" width="200"/>
