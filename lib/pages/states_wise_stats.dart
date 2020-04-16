@@ -211,7 +211,7 @@ class _DistrictsInfoState extends State<DistrictsInfo> {
       ),
       body: (_districts.isEmpty)
           ? Center(
-              child: Text('No district effected'),
+              child: Text('No district affected'),
             )
           : ListView.separated(
               separatorBuilder: (context, i) => Container(
@@ -223,7 +223,7 @@ class _DistrictsInfoState extends State<DistrictsInfo> {
               itemBuilder: (context, index) {
                 return ListTile(
                   title: Text((_districts[index].district == 'Unknown')
-                      ? 'Unknown Districts'
+                      ? 'Unknown regions'
                       : _districts[index].district),
                   subtitle: Text(
                       'Confirmed cases: ${_districts[index].cases['confirmed']}'),

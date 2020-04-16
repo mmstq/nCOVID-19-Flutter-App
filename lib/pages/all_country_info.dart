@@ -2,7 +2,7 @@ import 'package:COVID19/api/service.dart';
 import 'package:COVID19/data.dart';
 import 'package:COVID19/models/case_model.dart';
 import 'package:COVID19/notifiers/country_notifier.dart';
-import 'package:COVID19/pages/country_wise_stats.dart';
+import 'package:COVID19/pages/single_country_stats.dart';
 import 'package:COVID19/pages/search_country.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

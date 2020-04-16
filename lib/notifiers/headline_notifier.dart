@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:typed_data';
+import 'package:COVID19/api/api_urls.dart';
 import 'package:COVID19/data.dart';
 import 'package:COVID19/models/headline_model.dart';
 import 'package:COVID19/api/service.dart';
@@ -9,30 +11,35 @@ import 'package:flutter/cupertino.dart';
 class HeadlineNotifier extends ChangeNotifier{
 
   List<HeadLine> _headlines;
+  Uint8List file;
 
   List<HeadLine> get headlines => _headlines;
 
   MiddleWare _api = service<MiddleWare>();
 
+  final _intSize = 286608;
+
   NoteStates _state = NoteStates.Busy;
 
   NoteStates get state => _state;
 
-  void setState(NoteStates state) {
+  void _setState(NoteStates state) {
     _state = state;
     notifyListeners();
   }
 
-  void notify() => notifyListeners();
+  void getHeadlines() async {
+    _setState(NoteStates.Busy);
+    http.Response _userProfile = await _api.getHeadlines(ApiURL.path);
+    Iterable _iterable = jsonDecode(_userProfile.body)['articles'];
+    _headlines = _iterable.map((e) => HeadLine.fromJson(e)).toList();
+    _setState(NoteStates.Done);
+    _api.getRandomMaskUsageImage().then((object){
+      if(object.bodyBytes.toList().length != _intSize)
+        file = object.bodyBytes;
+        notifyListeners();
+    });
 
-  Future<dynamic> getHeadlines() async {
-    var path = 'https://newsapi.org/v2/top-headlines?q=COVID&from=2020-03-16&sortBy=publishedAt&apiKey=65a8e68e1ddb4adb816120b8c2cd354e&pageSize=10&page=1&country=in';
-    setState(NoteStates.Busy);
-    http.Response userProfile = await _api.getHeadlines(path);
-    Iterable iterable = jsonDecode(userProfile.body)['articles'];
-    _headlines = iterable.map((e) => HeadLine.fromJson(e)).toList();
-    setState(NoteStates.Done);
-    return userProfile;
   }
 
 }

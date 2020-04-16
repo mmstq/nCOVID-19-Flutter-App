@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'nCOVID-19',
       theme: ThemeData(
           fontFamily: 'Ubuntu',
           floatingActionButtonTheme: FloatingActionButtonThemeData(

@@ -23,4 +23,8 @@ class MiddleWare {
     http.Response userProfile = await _api.getStatesData();
     return userProfile;
   }
+  Future<dynamic> getRandomMaskUsageImage() async {
+    http.Response userProfile = await _api.getRandomMaskUsageImage();
+    return userProfile;
+  }
 }

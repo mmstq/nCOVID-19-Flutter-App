@@ -9,11 +9,11 @@ import 'package:flutter/cupertino.dart';
 
 class HomeNotifier extends ChangeNotifier{
 
-  CaseModel _cases;
+  CaseModel _cases = CaseModel(cases: 0, recovered: 0, active: 0, deaths: 0);
 
   CaseModel get notes => _cases;
 
-  MiddleWare api = service<MiddleWare>();
+  MiddleWare _api = service<MiddleWare>();
 
   NoteStates _state = NoteStates.Busy;
 
@@ -27,13 +27,12 @@ class HomeNotifier extends ChangeNotifier{
   void notify() => notifyListeners();
 
 
-  Future<dynamic> getAll(String path) async {
+  getAll(String path) async {
     setState(NoteStates.Busy);
-    http.Response userProfile = await api.get(path);
-    var iterable = jsonDecode(userProfile.body);
-    _cases = CaseModel.fromJson(iterable);
+    http.Response _userProfile = await _api.get(path);
+    var _iterable = jsonDecode(_userProfile.body);
+    _cases = CaseModel.fromJson(_iterable);
     setState(NoteStates.Done);
-    return userProfile;
   }
 
 }

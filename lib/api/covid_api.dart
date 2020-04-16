@@ -13,6 +13,8 @@ class NoteAPI {
   final _key = ApiURL.key;
   final _internalHostName = ApiURL.rapidHost;
   final _internalHostKey = ApiURL.rapidKey;
+  final _maskHost = ApiURL.maskUsageTipsHost;
+  final _maskUrl = ApiURL.maskUsageTips;
 
   Future<dynamic> get(String apiPath) async {
     http.Response _response;
@@ -20,7 +22,7 @@ class NoteAPI {
       _response = await http.get(_baseURL + apiPath);
       _response = _responseCheck(_response);
     } on SocketException {
-      throw TooManyRequests("Not connected to internet");
+      throw FetchDataException("Not connected to internet");
     }
     return _response;
   }
@@ -31,7 +33,7 @@ class NoteAPI {
       _response = await http.get(apiPath);
       _response = _responseCheck(_response);
     } on SocketException {
-      throw TooManyRequests("Not connected to internet");
+      throw FetchDataException("Not connected to internet");
     }
     return _response;
   }
@@ -45,7 +47,7 @@ class NoteAPI {
           headers: {_internalHostName: _host, _internalHostKey: _key});
       _response = _responseCheck(_response);
     } on SocketException {
-      throw TooManyRequests("Not connected to internet");
+      throw FetchDataException("Not connected to internet");
     }
     return _response;
   }
@@ -58,7 +60,20 @@ class NoteAPI {
           headers: {'x-rapidapi-host': _hostStateData, 'x-rapidapi-key': _key});
       _response = _responseCheck(_response);
     } on SocketException {
-      throw TooManyRequests("Not connected to internet");
+      throw FetchDataException("Not connected to internet");
+    }
+    return _response;
+  }
+
+  Future<dynamic> getRandomMaskUsageImage() async {
+
+    http.Response _response;
+    try {
+      _response = await http.get(_maskUrl,
+          headers: {'x-rapidapi-host': _maskHost, 'x-rapidapi-key': _key});
+      _response = _responseCheck(_response);
+    } on SocketException {
+      throw FetchDataException("Not connected to internet");
     }
     return _response;
   }
@@ -85,7 +100,7 @@ class NoteAPI {
         throw IntervalServerException();
 
       default:
-        throw TooManyRequests(
+        throw FetchDataException(
             'Error occured while Communication with Server with StatusCode : ${response.statusCode}');
     }
   }
