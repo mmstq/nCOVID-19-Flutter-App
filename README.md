@@ -2,7 +2,7 @@
 
 An app to get latest information about COVID-19 Virus
 
-APK Download Link
+![Download APK File](https://github.com/mmstq/nCOVID-19-Flutter-App/blob/master/mmstq.com.covid.apk?raw=true)
 
 Screenshots
 <div>
