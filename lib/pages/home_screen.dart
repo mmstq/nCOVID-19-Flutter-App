@@ -1,15 +1,17 @@
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:COVID19/api/api_urls.dart';
 import 'package:COVID19/api/service.dart';
 import 'package:COVID19/data.dart';
+import 'package:COVID19/models/image_model.dart';
 import 'package:COVID19/notifiers/headline_notifier.dart';
 import 'package:COVID19/notifiers/homescreen_notifier.dart';
 import 'package:COVID19/pages/about_me.dart';
 import 'package:COVID19/pages/all_country_info.dart';
 import 'package:COVID19/pages/india_map.dart';
 import 'package:COVID19/pages/states_wise_stats.dart';
+import 'package:COVID19/pages/who_images.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -30,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   AnimationController _animationControllerRefresh;
   CurvedAnimation _animationRefresh;
   Animation<double> _tweenRefresh;
-  bool _started = true;
   Size screen;
 
   @override
@@ -53,7 +54,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   bool _dialog = true;
-  bool _update = true;
 
   @override
   void dispose() {
@@ -111,9 +111,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           children: <Widget>[
                             InkWell(
                               child: Container(
+                                height: 35,
+                                width: 35,
                                 padding: EdgeInsets.all(5),
                                 decoration: BoxDecoration(
-                                    color: Colors.indigo.shade400.withOpacity(0.4),
+                                    color:
+                                        Colors.indigo.shade400.withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(4)),
                                 child: Icon(
                                   Icons.share,
@@ -122,15 +125,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 ),
                               ),
                               onTap: () {
-                                Share.share('An android app that shows latest information, stats and news about the COVID-19 pandemic.\nIt also shows Indian states and district wise tally and much more...\nDownload now:\n${ApiURL.apkURL}');
+                                Share.share(
+                                    'An android app that shows latest information, stats and news about the COVID-19 pandemic.\nIt also shows Indian states and district wise tally and much more...\nDownload now:\n${ApiURL.apkURL}');
                               },
                             ),
-                            SizedBox(width: 5,),
+                            SizedBox(
+                              width: 5,
+                            ),
                             InkWell(
                               child: Container(
+                                height: 35,
+                                width: 35,
                                 padding: EdgeInsets.all(5),
                                 decoration: BoxDecoration(
-                                    color: Colors.indigo.shade400.withOpacity(0.4),
+                                    color:
+                                        Colors.indigo.shade400.withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(4)),
                                 child: Icon(
                                   Icons.person,
@@ -143,31 +152,63 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     builder: (context) => AboutMe()));
                               },
                             ),
-                            SizedBox(width: 5,),
+                            SizedBox(
+                              width: 5,
+                            ),
                             Container(
+                                height: 35,
+                                width: 35,
                                 padding: EdgeInsets.all(5),
                                 decoration: BoxDecoration(
-                                    color: Colors.indigo.shade400.withOpacity(0.4),
+                                    color:
+                                        Colors.indigo.shade400.withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(4)),
-                                child:                             AnimatedBuilder(
+                                child: AnimatedBuilder(
                                   animation: _animationRefresh,
                                   child: InkWell(
-                                    onTap: (){
+                                    onTap: () {
                                       _notesNotifier.getAll('all');
                                       _animationControllerRefresh.reset();
                                       _animationControllerRefresh.repeat();
-                                      _started = true;
                                     },
-                                    child: Icon(Icons.refresh, color: Colors.white, size: 25,),
+                                    child: Icon(
+                                      Icons.refresh,
+                                      color: Colors.white,
+                                      size: 25,
+                                    ),
                                   ),
                                   builder: (context, child) {
                                     return Transform.rotate(
-                                        angle: _animationRefresh.value * pi * 2 * 18,
+                                        angle: _animationRefresh.value *
+                                            pi *
+                                            2 *
+                                            18,
                                         child: child);
                                   },
-                                )
-
+                                )),
+                            SizedBox(
+                              width: 5,
                             ),
+                            InkWell(
+                              child: Container(
+                                height: 35,
+                                width: 35,
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                    color:
+                                        Colors.indigo.shade400.withOpacity(0.4),
+                                    borderRadius: BorderRadius.circular(4)),
+                                child: Image.asset(
+                                  'asset/who.png',
+                                  color: Colors.white,
+                                  height: 25,
+                                ),
+                              ),
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => WHO(_notesNotifier.images)));
+                              },
+                            )
                           ],
                         ),
                       ),
@@ -181,21 +222,29 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           builder: (context, model, child) {
             _notesNotifier = model;
             if (model.state == NoteStates.Done) {
-              if(model.updateAvailable && _update){
-                Future.delayed(Duration(milliseconds: 300))
-                    .then((onValue) {
+
+              if (model.updateAvailable && _dialog) {
+                Future.delayed(Duration(milliseconds: 300)).then((onValue) {
                   _dialog = false;
-                  _update = false;
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return showUpdateDialog(
-                            context);
+                        return showUpdateDialog(context);
                       });
                 });
+              } else {
+                if (_dialog && model.images.isNotEmpty)
+                  Future.delayed(Duration(milliseconds: 300)).then((onValue) {
+                    _dialog = false;
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          final image = Random().nextInt(model.images.length);
+                          return showCustomDialog(context, model.images[image]);
+                        });
+                  });
               }
-              if (_started) {
-                _started = false;
+              if (_animationControllerRefresh.isAnimating) {
                 _animationControllerRefresh.stop();
               }
             }
@@ -363,13 +412,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 fontWeight: FontWeight.w300),
                           ),
                           Container(
-                            height: 25,
+                            height: 35,
                             width: 35,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
                                 image: DecorationImage(
+                                    fit: BoxFit.fill,
                                     image: NetworkImage(
-                                        "https://raw.githubusercontent.com/NovelCOVID/API/master/assets/flags/in.png"))),
+                                        "https://www.countryflags.io/in/flat/64.png"))),
                           )
                         ],
                       ),
@@ -390,18 +439,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         ),
                       );
                     } else {
-                      if (headlineModel.file != null && _dialog) {
-                        Future.delayed(Duration(milliseconds: 300))
-                            .then((onValue) {
-                          _dialog = false;
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return showCustomDialog(
-                                    context, headlineModel.file);
-                              });
-                        });
-                      }
                       return Expanded(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
@@ -481,7 +518,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             (model.state == NoteStates.Busy)
                 ? Center(
                     child: Container(
-                      padding: EdgeInsets.all(4),
+                        padding: EdgeInsets.all(4),
                         height: 25,
                         width: 25,
                         child: Theme(
@@ -490,7 +527,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             strokeWidth: 1.5,
                           ),
                         )),
-
                   )
                 : getTotalCount(item)
           ],
@@ -514,20 +550,43 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget showCustomDialog(BuildContext context, Uint8List image) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      elevation: 30,
-      child: Container(
-        height: screen.width * 0.8,
-        width: screen.width * 0.8,
-        decoration: BoxDecoration(
-            border: Border.all(color: Colors.white, width: 2),
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(5),
-            image:
-                DecorationImage(image: MemoryImage(image), fit: BoxFit.fill)),
+  Widget showCustomDialog(BuildContext context, ImageModel image) {
+    return TweenAnimationBuilder(
+      duration: Duration(milliseconds: 200),
+      child: Dialog(
+        backgroundColor: Colors.white,
+        elevation: 30,
+        child: AspectRatio(
+          aspectRatio: image.width / image.height,
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.white, width: 2),
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: CachedNetworkImage(
+              imageUrl: image.imageUrl,
+              fit: BoxFit.fill,
+              placeholder: (context, url) => Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          ),
+        ),
       ),
+      curve: Curves.bounceInOut,
+
+      tween: Tween<double>(
+        begin: 0,
+        end: 2*pi,
+      ),
+      builder: (_, value, child) {
+        double offset = sin(value);
+        return Transform.translate(
+          offset: Offset(offset * 20, 0),
+          child: child,
+        );
+      },
     );
   }
 
@@ -543,57 +602,75 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             border: Border.all(color: Colors.white, width: 2),
             color: Colors.white,
             borderRadius: BorderRadius.circular(5)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Spacer(flex: 3,),
-          Image.asset('asset/update.png', height: 100,width: 100,),
-          Spacer(flex: 2,),
-
-          Text('Update Available', style: style,),
-          Spacer(flex: 1,),
-
-          Text('Download?', style: style,),
-          Spacer(flex: 2,),
-
-          Spacer(),
-
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: RaisedButton(
-                    color: Colors.redAccent,
-                    child: Text('No', style: TextStyle(color: Colors.white)
-                      ,),
-                    onPressed: (){
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: RaisedButton(
-
-                    color: Colors.lightGreenAccent.shade700,
-                    child: Text('Yes', style: TextStyle(color: Colors.white)
-                      ,),
-                    onPressed: ()async{
-                      if(await canLaunch(ApiURL.apkURL)){
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Spacer(
+              flex: 3,
+            ),
+            Image.asset(
+              'asset/update.png',
+              height: 100,
+              width: 100,
+            ),
+            Spacer(
+              flex: 2,
+            ),
+            Text(
+              'Update Available',
+              style: style,
+            ),
+            Spacer(
+              flex: 1,
+            ),
+            Text(
+              'Download?',
+              style: style.copyWith(fontWeight: FontWeight.w600),
+            ),
+            Spacer(
+              flex: 2,
+            ),
+            Spacer(),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: RaisedButton(
+                      color: Colors.redAccent,
+                      child: Text(
+                        'No',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
                         Navigator.pop(context);
-                        await launch(ApiURL.apkURL);
-                      }
-                    },
+                      },
+                    ),
                   ),
                 ),
-              ),
-            ],
-          )
-        ],
-      ),),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: RaisedButton(
+                      color: Colors.lightGreenAccent.shade700,
+                      child: Text(
+                        'Yes',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () async {
+                        if (await canLaunch(ApiURL.apkURL)) {
+                          Navigator.pop(context);
+                          await launch(ApiURL.apkURL);
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
     );
   }
 }

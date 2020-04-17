@@ -2,8 +2,9 @@ import 'package:COVID19/api/service.dart';
 import 'package:COVID19/data.dart';
 import 'package:COVID19/models/case_model.dart';
 import 'package:COVID19/notifiers/country_notifier.dart';
-import 'package:COVID19/pages/single_country_stats.dart';
 import 'package:COVID19/pages/search_country.dart';
+import 'package:COVID19/pages/single_country_stats.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -17,9 +18,9 @@ class TopCountry extends StatefulWidget {
 
 class _TopCountryState extends State<TopCountry> {
   CountryNotifier _model;
-  CaseModel india;
-  List<CaseModel> _list=[];
+  List<CaseModel> _list = [];
   String _sortString = 'cases';
+
   @override
   void initState() {
     super.initState();
@@ -28,7 +29,8 @@ class _TopCountryState extends State<TopCountry> {
     });
   }
 
-  final listSort = ['Cases','Deaths', 'Recovered','Country'];
+
+  final listSort = ['Cases', 'Deaths', 'Recovered', 'Country'];
 
   final FlutterMoneyFormatter _fmf = FlutterMoneyFormatter(amount: 620000);
 
@@ -36,27 +38,28 @@ class _TopCountryState extends State<TopCountry> {
       fontFamily: 'Ubuntu', fontSize: 20, fontWeight: FontWeight.w300);
 
   PopupMenuButton<String> _simplePopup() => PopupMenuButton<String>(
-    icon: Icon(Icons.sort),
-    padding: EdgeInsets.all(0),
-    itemBuilder: (context) {
-      var list =listSort.map((e) {
-        return (PopupMenuItem(
-          value: e.toLowerCase(),
-          child: Text(e, style: (e.toLowerCase() == _sortString)?TextStyle(
-            fontWeight: FontWeight.w700,
-            color:  Theme.of(context).primaryColor
-          ):TextStyle(color: Colors.grey.shade700)),
-        ));
-      }).toList();
+        icon: Icon(Icons.sort),
+        padding: EdgeInsets.all(0),
+        itemBuilder: (context) {
+          var list = listSort.map((e) {
+            return (PopupMenuItem(
+              value: e.toLowerCase(),
+              child: Text(e,
+                  style: (e.toLowerCase() == _sortString)
+                      ? TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(context).primaryColor)
+                      : TextStyle(color: Colors.grey.shade700)),
+            ));
+          }).toList();
 
-      return list;
-
-    },
-    onSelected: (value){
-      _sortString = value;
-      _model.sort(_sortString);
-    },
-  );
+          return list;
+        },
+        onSelected: (value) {
+          _sortString = value;
+          _model.sort(_sortString);
+        },
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -69,15 +72,17 @@ class _TopCountryState extends State<TopCountry> {
           title: Text("nCOVID-19"),
           actions: <Widget>[
             Consumer<CountryNotifier>(
-              builder: (context1, model1, child1){
+              builder: (context1, model1, child1) {
                 return IconButton(
-                  splashColor: Theme.of(context).primaryColor,
+                    splashColor: Theme.of(context).primaryColor,
                     icon: Icon(Icons.search),
-                    onPressed:(model1.state == NoteStates.Done)? () {
-                      showSearch(
-                          context: context, delegate: SearchByCountry(_model.notes));
-                    }:null
-                );
+                    onPressed: (model1.state == NoteStates.Done)
+                        ? () {
+                            showSearch(
+                                context: context,
+                                delegate: SearchByCountry(_model.notes));
+                          }
+                        : null);
               },
             ),
             _simplePopup()
@@ -85,7 +90,6 @@ class _TopCountryState extends State<TopCountry> {
         ),
         body: Consumer<CountryNotifier>(
           builder: (context, model, child) {
-
             _model = model;
             if (model.state == NoteStates.Busy) {
               return Center(
@@ -108,21 +112,12 @@ class _TopCountryState extends State<TopCountry> {
               );
             } else
               _list = model.notes;
-              india = _list
-                  .firstWhere((element) => element.country == 'India');
-
             return ListView.builder(
+              physics: BouncingScrollPhysics(),
+              cacheExtent: 10,
               itemCount: _list.length,
               itemBuilder: (context, index) {
-                if (index == 0) {
-                  return Column(
-                    children: <Widget>[
-                      getListItem(context, india, screen),
-                      getListItem(context, _list[index], screen)
-                    ],
-                  );
-                }else
-                  return getListItem(context, _list[index], screen);
+                return getListItem(context, _list[index], screen);
               },
             );
           },
@@ -132,45 +127,35 @@ class _TopCountryState extends State<TopCountry> {
   }
 
   Widget getListItem(BuildContext context, CaseModel caseModel, Size screen) {
-
-    return ExpansionTile(
+    return ListTile(
       title: Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: Row(
           children: <Widget>[
-            Image.network(
-              caseModel.countryInfo.flag,
+            CachedNetworkImage(
+              imageUrl:
+                  'https://www.countryflags.io/${caseModel.countryInfo.iso2}/flat/64.png',
               height: 25,
               width: 25,
+              placeholder: (_,url)=>Image.asset('asset/unknown.png', height: 25,width: 25,),
             ),
             SizedBox(
               width: 10,
             ),
-            Text(
-              caseModel.country,
-              style: style.copyWith(fontWeight: FontWeight.w600,fontSize: 17, color: Colors.grey.shade800),
-            ),
-            SizedBox(width: 10,),
-            InkWell(
-              onTap: (){
-                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>CountryStats(caseModel)));
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(3),
-                  border: Border.all(color: Colors.grey.shade300)
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text('curve ', style: TextStyle(color: Colors.black87, fontSize: 12),),
-                    Icon(Icons.show_chart, size: 14, color: Colors.orangeAccent,),
-                  ],
-                ),
+            Expanded(
+              child: Text(
+                caseModel.country,
+                overflow: TextOverflow.ellipsis,
+                style: style.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 17,
+                    color: Colors.grey.shade800),
               ),
-            )
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            getCurveWidget(caseModel)
           ],
         ),
       ),
@@ -190,26 +175,23 @@ class _TopCountryState extends State<TopCountry> {
                   height: 5,
                 ),
                 Text(
-                  '${_fmf.copyWith(amount: caseModel.cases.floorToDouble()).output.withoutFractionDigits}',
-                  style: TextStyle(
-                      color: Colors.black87)
-                ),
+                    '${_fmf.copyWith(amount: caseModel.cases.floorToDouble()).output.withoutFractionDigits}',
+                    style: TextStyle(color: Colors.black87)),
               ],
             ),
             Column(
               children: <Widget>[
                 Text(
                   'Deaths',
-                  style: TextStyle(
-                      color: Colors.red, fontWeight: FontWeight.w500),
+                  style:
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.w500),
                 ),
                 SizedBox(
                   height: 5,
                 ),
                 Text(
                     '${_fmf.copyWith(amount: caseModel.deaths.floorToDouble()).output.withoutFractionDigits}',
-                    style: TextStyle(
-                    color: Colors.black87)),
+                    style: TextStyle(color: Colors.black87)),
               ],
             ),
             Column(
@@ -225,85 +207,42 @@ class _TopCountryState extends State<TopCountry> {
                 ),
                 Text(
                     '${_fmf.copyWith(amount: caseModel.recovered.floorToDouble()).output.withoutFractionDigits}',
-                    style: TextStyle(
-                        color: Colors.black87)),
+                    style: TextStyle(color: Colors.black87)),
               ],
             ),
-
           ],
         ),
       ),
-      children: <Widget>[
-        Container(
-          margin: EdgeInsets.fromLTRB(10, 0, 10, 15),
-          height: 0.5,
-          width: screen.width * 0.9,
-          color: Colors.grey.shade500,
+    );
+  }
+
+  Widget getCurveWidget(CaseModel caseModel) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => CountryStats(caseModel)));
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(3),
+            border: Border.all(color: Colors.grey.shade300)),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'curve ',
+              style: TextStyle(color: Colors.black87, fontSize: 12),
+            ),
+            Icon(
+              Icons.show_chart,
+              size: 14,
+              color: Colors.orangeAccent,
+            ),
+          ],
         ),
-/*        Text(
-          "More Stats",
-          style: style.copyWith(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.grey.shade700),
-        )*/
-        Padding(
-          padding: const EdgeInsets.fromLTRB(15, 10, 35, 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Text(
-                    'Cases\nToday',
-                    textAlign: TextAlign.center,
-
-                    style: TextStyle(
-                        color: Colors.blue, fontWeight: FontWeight.w500),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    '${_fmf.copyWith(amount: caseModel.todayCases.floorToDouble()).output.withoutFractionDigits}',
-                  ),
-                ],
-              ),
-              Column(
-                children: <Widget>[
-                  Text(
-                    'Deaths\nToday',
-                    textAlign: TextAlign.center,
-
-                    style: TextStyle(
-                        color: Colors.red, fontWeight: FontWeight.w500),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                      '${_fmf.copyWith(amount: caseModel.todayDeaths.floorToDouble()).output.withoutFractionDigits}'),
-                ],
-              ),
-              Column(
-                children: <Widget>[
-                  Text(
-                    'Total\nCritical',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.orange.shade700,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                      '${_fmf.copyWith(amount: caseModel.critical.floorToDouble()).output.withoutFractionDigits}'),
-                ],
-              ),
-
-
-            ],
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

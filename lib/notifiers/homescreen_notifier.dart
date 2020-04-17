@@ -4,10 +4,12 @@ import 'package:COVID19/api/api_urls.dart';
 import 'package:COVID19/models/case_model.dart';
 import 'package:COVID19/data.dart';
 import 'package:COVID19/api/service.dart';
+import 'package:COVID19/models/image_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:COVID19/api/middleware.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:package_info/package_info.dart';
+
 
 class HomeNotifier extends ChangeNotifier{
 
@@ -15,6 +17,9 @@ class HomeNotifier extends ChangeNotifier{
 
   CaseModel get notes => _cases;
 
+  List<ImageModel> _images = [];
+
+  List<ImageModel> get images => _images;
   MiddleWare _api = service<MiddleWare>();
 
   NoteStates _state = NoteStates.Busy;
@@ -33,6 +38,7 @@ class HomeNotifier extends ChangeNotifier{
 
   getAll(String path) async {
     getUpdate();
+    getWhoImages();
     setState(NoteStates.Busy);
     http.Response _userProfile = await _api.get(path);
     var _iterable = jsonDecode(_userProfile.body);
@@ -50,6 +56,16 @@ class HomeNotifier extends ChangeNotifier{
       updateAvailable = true;
       notify();
     }
+  }
+  getWhoImages() async {
+    http.Response _userProfile = await _api.getRandomMaskUsageImage();
+    final map = json.decode(_userProfile.body);
+    map.forEach((value){
+      _images.add(ImageModel.fromJson(value));
+    });
+    notify();
+
+
   }
 
 

@@ -64,6 +64,7 @@ class _StatesInfoState extends State<StatesInfo> {
               );
             } else
               return ListView.separated(
+                physics: BouncingScrollPhysics(),
                 separatorBuilder: (context, i) => Container(
                   height: 1,
                   color: Colors.grey.shade300,
@@ -93,26 +94,22 @@ class _StatesInfoState extends State<StatesInfo> {
       child: ListTile(
         title: Padding(
           padding: const EdgeInsets.only(top: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                caseModel.state,
-                style: _style.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 17,
-                    color: Colors.grey.shade800),
-              ),
-              Icon(Icons.keyboard_arrow_right),
-            ],
+          child: Text(
+            caseModel.state,
+            style: _style.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 17,
+                color: Colors.grey.shade800),
           ),
         ),
+        trailing: Icon(Icons.keyboard_arrow_right),
         subtitle: Padding(
           padding: const EdgeInsets.fromLTRB(10, 10, 5, 15),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Column(
+                mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text(
                     'Cases',
@@ -128,6 +125,7 @@ class _StatesInfoState extends State<StatesInfo> {
                 ],
               ),
               Column(
+                mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text(
                     'Deaths',
@@ -143,6 +141,7 @@ class _StatesInfoState extends State<StatesInfo> {
                 ],
               ),
               Column(
+                mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text(
                     'Recovered',
@@ -159,6 +158,7 @@ class _StatesInfoState extends State<StatesInfo> {
                 ],
               ),
               Column(
+                mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text(
                     'Active',
@@ -201,6 +201,7 @@ class _DistrictsInfoState extends State<DistrictsInfo> {
     if (widget._map != null)
       widget._map
           .forEach((key, value) => _districts.add(DistrictModel(key, value)));
+    _districts.sort((a, b)=>b.cases['confirmed'].compareTo(a.cases['confirmed']));
   }
 
   @override
@@ -214,7 +215,9 @@ class _DistrictsInfoState extends State<DistrictsInfo> {
               child: Text('No district affected'),
             )
           : ListView.separated(
-              separatorBuilder: (context, i) => Container(
+        physics: BouncingScrollPhysics(),
+
+        separatorBuilder: (context, i) => Container(
                 height: 1,
                 color: Colors.grey.shade300,
               ),

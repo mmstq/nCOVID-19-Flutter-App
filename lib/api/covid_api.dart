@@ -31,7 +31,6 @@ class NoteAPI {
   Future<dynamic> getHeadlines() async {
     final dateTime = new DateTime.now().subtract(Duration(days: 5));
     final fromDate = '${dateTime.year}-${dateTime.month}-${dateTime.day}';
-    print(fromDate);
     final path = 'https://newsapi.org/v2/top-headlines?q=COVID&from=$fromDate&sortBy=publishedAt&apiKey=${ApiURL.newsApiKey}&pageSize=10&page=1&country=in';
     http.Response _response;
     try {
@@ -57,7 +56,6 @@ class NoteAPI {
   Future<dynamic> getGraphData(String country) async {
     
     http.Response _response;
-    debugPrint('country is $country');
     try {
       _response = await http.get(_url + '?country=$country',
           headers: {_internalHostName: _host, _internalHostKey: _key});
@@ -85,8 +83,7 @@ class NoteAPI {
 
     http.Response _response;
     try {
-      _response = await http.get(_maskUrl,
-          headers: {'x-rapidapi-host': _maskHost, 'x-rapidapi-key': _key});
+      _response = await http.get('https://raw.githubusercontent.com/mmstq/json/master/who_images.json');
       _response = _responseCheck(_response);
     } on SocketException {
       throw FetchDataException("Not connected to internet");

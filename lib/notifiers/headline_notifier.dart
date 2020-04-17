@@ -34,11 +34,11 @@ class HeadlineNotifier extends ChangeNotifier{
     Iterable _iterable = jsonDecode(_userProfile.body)['articles'];
     _headlines = _iterable.map((e) => HeadLine.fromJson(e)).toList();
     _setState(NoteStates.Done);
-    _api.getRandomMaskUsageImage().then((object){
+    /*_api.getRandomMaskUsageImage().then((object){
       if(object.bodyBytes.toList().length != _intSize)
         file = object.bodyBytes;
         notifyListeners();
-    });
+    });*/
 
   }
 

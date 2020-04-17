@@ -22,6 +22,7 @@ dependencies:
     sdk: flutter
   http:
   package_info:
+  cached_network_image:
   webview_flutter: 0.3.19+9
   bezier_chart:
   share:
