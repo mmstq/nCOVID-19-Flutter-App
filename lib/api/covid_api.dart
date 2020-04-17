@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:COVID19/api/api_urls.dart';
 import 'package:COVID19/api/error_handling.dart';
+import 'package:COVID19/data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
@@ -27,10 +28,14 @@ class NoteAPI {
     return _response;
   }
 
-  Future<dynamic> getHeadlines(String apiPath) async {
+  Future<dynamic> getHeadlines() async {
+    final dateTime = new DateTime.now().subtract(Duration(days: 5));
+    final fromDate = '${dateTime.year}-${dateTime.month}-${dateTime.day}';
+    print(fromDate);
+    final path = 'https://newsapi.org/v2/top-headlines?q=COVID&from=$fromDate&sortBy=publishedAt&apiKey=${ApiURL.newsApiKey}&pageSize=10&page=1&country=in';
     http.Response _response;
     try {
-      _response = await http.get(apiPath);
+      _response = await http.get(path);
       _response = _responseCheck(_response);
     } on SocketException {
       throw FetchDataException("Not connected to internet");

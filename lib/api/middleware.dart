@@ -9,8 +9,8 @@ class MiddleWare {
     http.Response userProfile = await _api.get(queryCountry);
     return userProfile;
   }
-  Future<dynamic> getHeadlines(String queryCountry) async {
-    http.Response userProfile = await _api.getHeadlines(queryCountry);
+  Future<dynamic> getHeadlines() async {
+    http.Response userProfile = await _api.getHeadlines();
     return userProfile;
   }
 

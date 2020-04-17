@@ -30,7 +30,7 @@ class HeadlineNotifier extends ChangeNotifier{
 
   void getHeadlines() async {
     _setState(NoteStates.Busy);
-    http.Response _userProfile = await _api.getHeadlines(ApiURL.path);
+    http.Response _userProfile = await _api.getHeadlines();
     Iterable _iterable = jsonDecode(_userProfile.body)['articles'];
     _headlines = _iterable.map((e) => HeadLine.fromJson(e)).toList();
     _setState(NoteStates.Done);
