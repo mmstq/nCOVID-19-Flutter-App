@@ -9,6 +9,10 @@ class MiddleWare {
     http.Response userProfile = await _api.get(queryCountry);
     return userProfile;
   }
+  Future<dynamic> getUpdate() async {
+    http.Response userProfile = await _api.checkForUpdate();
+    return userProfile;
+  }
   Future<dynamic> getHeadlines() async {
     http.Response userProfile = await _api.getHeadlines();
     return userProfile;

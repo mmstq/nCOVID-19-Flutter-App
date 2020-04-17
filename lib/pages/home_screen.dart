@@ -53,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   bool _dialog = true;
+  bool _update = true;
 
   @override
   void dispose() {
@@ -180,6 +181,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           builder: (context, model, child) {
             _notesNotifier = model;
             if (model.state == NoteStates.Done) {
+              if(model.updateAvailable && _update){
+                Future.delayed(Duration(milliseconds: 300))
+                    .then((onValue) {
+                  _dialog = false;
+                  _update = false;
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return showUpdateDialog(
+                            context);
+                      });
+                });
+              }
               if (_started) {
                 _started = false;
                 _animationControllerRefresh.stop();
@@ -514,6 +528,72 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             image:
                 DecorationImage(image: MemoryImage(image), fit: BoxFit.fill)),
       ),
+    );
+  }
+
+  Widget showUpdateDialog(BuildContext context) {
+    final style = TextStyle(fontWeight: FontWeight.w400, fontSize: 20);
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      elevation: 30,
+      child: Container(
+        height: screen.width * 0.8,
+        width: screen.width * 0.6,
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.white, width: 2),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(5)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Spacer(flex: 3,),
+          Image.asset('asset/update.png', height: 100,width: 100,),
+          Spacer(flex: 2,),
+
+          Text('Update Available', style: style,),
+          Spacer(flex: 1,),
+
+          Text('Download?', style: style,),
+          Spacer(flex: 2,),
+
+          Spacer(),
+
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RaisedButton(
+                    color: Colors.redAccent,
+                    child: Text('No', style: TextStyle(color: Colors.white)
+                      ,),
+                    onPressed: (){
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RaisedButton(
+
+                    color: Colors.lightGreenAccent.shade700,
+                    child: Text('Yes', style: TextStyle(color: Colors.white)
+                      ,),
+                    onPressed: ()async{
+                      if(await canLaunch(ApiURL.apkURL)){
+                        Navigator.pop(context);
+                        await launch(ApiURL.apkURL);
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ],
+          )
+        ],
+      ),),
     );
   }
 }

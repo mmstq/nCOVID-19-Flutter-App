@@ -1,11 +1,13 @@
 
 import 'dart:convert';
+import 'package:COVID19/api/api_urls.dart';
 import 'package:COVID19/models/case_model.dart';
 import 'package:COVID19/data.dart';
 import 'package:COVID19/api/service.dart';
 import 'package:http/http.dart' as http;
 import 'package:COVID19/api/middleware.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:package_info/package_info.dart';
 
 class HomeNotifier extends ChangeNotifier{
 
@@ -16,6 +18,8 @@ class HomeNotifier extends ChangeNotifier{
   MiddleWare _api = service<MiddleWare>();
 
   NoteStates _state = NoteStates.Busy;
+
+  bool updateAvailable = false;
 
   NoteStates get state => _state;
 
@@ -28,11 +32,27 @@ class HomeNotifier extends ChangeNotifier{
 
 
   getAll(String path) async {
+    getUpdate();
     setState(NoteStates.Busy);
     http.Response _userProfile = await _api.get(path);
     var _iterable = jsonDecode(_userProfile.body);
     _cases = CaseModel.fromJson(_iterable);
     setState(NoteStates.Done);
   }
+
+  getUpdate() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String version = packageInfo.version;
+    http.Response _userProfile = await _api.getUpdate();
+    final map = json.decode(_userProfile.body);
+    ApiURL.apkURL = map['apkURL'];
+    if(map['version'] == version){
+      debugPrint('update available');
+      updateAvailable = true;
+      notify();
+    }
+  }
+
+
 
 }

@@ -12,7 +12,7 @@ description: An app to get latest information about COVID-19 Virus
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 1.0.2
+version: 1.1.0
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -21,6 +21,7 @@ dependencies:
   flutter:
     sdk: flutter
   http:
+  package_info:
   webview_flutter: 0.3.19+9
   bezier_chart:
   share:

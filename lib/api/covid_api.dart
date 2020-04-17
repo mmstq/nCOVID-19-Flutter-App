@@ -43,6 +43,17 @@ class NoteAPI {
     return _response;
   }
 
+  Future<dynamic> checkForUpdate() async {
+    http.Response _response;
+    try {
+      _response = await http.get(ApiURL.updateURL);
+      _response = _responseCheck(_response);
+    } on SocketException {
+      throw FetchDataException("Not connected to internet");
+    }
+    return _response;
+  }
+
   Future<dynamic> getGraphData(String country) async {
     
     http.Response _response;
