@@ -23,6 +23,7 @@ dependencies:
   http:
   webview_flutter: 0.3.19+9
   bezier_chart:
+  share:
   provider:
   flutter_money_formatter:
   url_launcher:

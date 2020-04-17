@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:COVID19/api/api_urls.dart';
 import 'package:COVID19/api/service.dart';
 import 'package:COVID19/data.dart';
 import 'package:COVID19/notifiers/headline_notifier.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 import 'package:provider/provider.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -60,7 +62,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final no = Random().nextInt(Data.list.length);
     screen = MediaQuery.of(context).size;
     return MultiProvider(
       providers: [
@@ -96,89 +97,77 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               borderRadius: BorderRadius.circular(4)),
                           padding: EdgeInsets.all(5),
                           child: Text(
-                            'nCOVID-19 Stats',
+                            'nCOVID-19 Tracker',
                             style: TextStyle(fontSize: 17, color: Colors.white),
                           ),
                         )
                         /**/,
                       ),
                       Positioned(
-                          bottom: 10,
-                          right: 10,
-                          child: AnimatedBuilder(
-                            animation: _animationRefresh,
-                            child: Image.asset(
-                              'asset/refresh.png',
-                              height: 25,
-                              width: 25,
-                              filterQuality: FilterQuality.high,
+                        bottom: 10,
+                        left: 10,
+                        child: Row(
+                          children: <Widget>[
+                            InkWell(
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                    color: Colors.indigo.shade400.withOpacity(0.4),
+                                    borderRadius: BorderRadius.circular(4)),
+                                child: Icon(
+                                  Icons.share,
+                                  color: Colors.white,
+                                  size: 25,
+                                ),
+                              ),
+                              onTap: () {
+                                Share.share('An android app that shows latest information, stats and news about the COVID-19 pandemic.\nIt also shows Indian states and district wise tally and much more...\nDownload now:\n${ApiURL.apkURL}');
+                              },
                             ),
-                            builder: (context, child) {
-                              return Transform.rotate(
-                                  angle: _animationRefresh.value * pi * 2 * 18,
-                                  child: GestureDetector(
-                                    child: child,
-                                    onTap: () {
+                            SizedBox(width: 5,),
+                            InkWell(
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                    color: Colors.indigo.shade400.withOpacity(0.4),
+                                    borderRadius: BorderRadius.circular(4)),
+                                child: Icon(
+                                  Icons.person,
+                                  color: Colors.white,
+                                  size: 25,
+                                ),
+                              ),
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => AboutMe()));
+                              },
+                            ),
+                            SizedBox(width: 5,),
+                            Container(
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                    color: Colors.indigo.shade400.withOpacity(0.4),
+                                    borderRadius: BorderRadius.circular(4)),
+                                child:                             AnimatedBuilder(
+                                  animation: _animationRefresh,
+                                  child: InkWell(
+                                    onTap: (){
                                       _notesNotifier.getAll('all');
                                       _animationControllerRefresh.reset();
                                       _animationControllerRefresh.repeat();
                                       _started = true;
                                     },
-                                  ));
-                            },
-                          )),
-                      Positioned(
-                        top: 35,
-                        right: 5,
-                        child: InkWell(
-                          child: Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                                color: Colors.indigo.shade400.withOpacity(0.4),
-                                borderRadius: BorderRadius.circular(4)),
-                            child: Column(
-                              children: <Widget>[
-                                Icon(
-                                  Icons.person,
-                                  color: Colors.white,
-                                  size: 18,
-                                ),
-                                Text('About',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w300))
-                              ],
+                                    child: Icon(Icons.refresh, color: Colors.white, size: 25,),
+                                  ),
+                                  builder: (context, child) {
+                                    return Transform.rotate(
+                                        angle: _animationRefresh.value * pi * 2 * 18,
+                                        child: child);
+                                  },
+                                )
+
                             ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => AboutMe()));
-                          },
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 10,
-                        left: 10,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.indigo.shade400.withOpacity(0.4),
-                              borderRadius: BorderRadius.circular(4)),
-                          padding: EdgeInsets.all(5),
-                          width: screen.width * 0.65,
-                          child: InkWell(
-                            onTap: () {
-                              setState(() {});
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 3.0),
-                              child: Text(Data.list[no],
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w300)),
-                            ),
-                          ),
+                          ],
                         ),
                       ),
                     ],
