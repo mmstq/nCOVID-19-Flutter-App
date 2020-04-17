@@ -46,8 +46,7 @@ class HomeNotifier extends ChangeNotifier{
     http.Response _userProfile = await _api.getUpdate();
     final map = json.decode(_userProfile.body);
     ApiURL.apkURL = map['apkURL'];
-    if(map['version'] == version){
-      debugPrint('update available');
+    if(map['version'] != version){
       updateAvailable = true;
       notify();
     }
