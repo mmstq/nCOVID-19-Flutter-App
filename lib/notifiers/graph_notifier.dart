@@ -28,7 +28,6 @@ class GraphNotifier extends ChangeNotifier{
     setState(NoteStates.Busy);
     http.Response userProfile = await api.getGraphData(country);
     Iterable iterable = jsonDecode(userProfile.body)['response'];
-    debugPrint(userProfile.body);
     _cases = iterable.map((e) => GraphCaseModel.fromJson(e)).toList();
     setState(NoteStates.Done);
   }

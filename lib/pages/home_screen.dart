@@ -223,7 +223,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             _notesNotifier = model;
             if (model.state == NoteStates.Done) {
 
-              if (model.updateAvailable && _dialog) {
+              if (!model.updateAvailable && _dialog) {
                 Future.delayed(Duration(milliseconds: 300)).then((onValue) {
                   _dialog = false;
                   showDialog(
@@ -568,14 +568,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               imageUrl: image.imageUrl,
               fit: BoxFit.fill,
               placeholder: (context, url) => Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(strokeWidth: 1.5,),
               ),
             ),
           ),
         ),
       ),
       curve: Curves.bounceInOut,
-
       tween: Tween<double>(
         begin: 0,
         end: 2*pi,
@@ -605,8 +604,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+
             Spacer(
               flex: 3,
+            ),
+            Text(
+              'Update Available',
+              style: style.copyWith(fontWeight: FontWeight.w600),
+            ),
+            Spacer(
+              flex: 2,
             ),
             Image.asset(
               'asset/update.png',
@@ -616,19 +623,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Spacer(
               flex: 2,
             ),
+
             Text(
-              'Update Available',
+              'Download Now..?',
               style: style,
-            ),
-            Spacer(
-              flex: 1,
-            ),
-            Text(
-              'Download?',
-              style: style.copyWith(fontWeight: FontWeight.w600),
-            ),
-            Spacer(
-              flex: 2,
             ),
             Spacer(),
             Row(
