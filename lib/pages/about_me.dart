@@ -25,7 +25,7 @@ class _AboutMeState extends State<AboutMe> {
                   color: Colors.indigo.shade400,
                   borderRadius: BorderRadius.circular(4)),
               child: Text(
-                'This app gives latest nCOVID-19 pandemic stats and headlines.',
+                'This app shows latest nCOVID-19 pandemic stats and headlines.',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18, color: Colors.white),
               ),
@@ -93,26 +93,7 @@ class _AboutMeState extends State<AboutMe> {
                 ],
               ),
             ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              padding: EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                  color: Colors.indigo.shade400.withOpacity(0.4),
-                  borderRadius: BorderRadius.circular(4)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('Class:',
-                      style:
-                          TextStyle(fontSize: 18, color: Colors.grey.shade800)),
-                  Text('CSE-A (6th Sem) ',
-                      style:
-                          TextStyle(fontSize: 20, color: Colors.grey.shade800)),
-                ],
-              ),
-            ),
+
             SizedBox(
               height: 30,
             ),

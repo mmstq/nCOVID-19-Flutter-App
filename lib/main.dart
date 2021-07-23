@@ -1,15 +1,12 @@
-import 'package:COVID19/api/service.dart';
-import 'package:COVID19/data.dart';
-import 'package:COVID19/pages/home_screen.dart';
+import 'package:covid19/api/service.dart';
+import 'package:covid19/data.dart';
+import 'package:covid19/pages/home_screen.dart';
 import 'package:flutter/material.dart';
-
 
 void main() {
   setupLocator();
   runApp(MyApp());
 }
-
-
 
 class MyApp extends StatelessWidget {
   @override
@@ -24,7 +21,7 @@ class MyApp extends StatelessWidget {
               splashColor: new MaterialColor(0xFF1f3548, Data.color)),
           primaryColor: Colors.indigoAccent.shade200,
           primaryColorDark: Colors.indigoAccent.shade400,
-          accentColor: Colors.indigoAccent.shade400),
+          accentColor: Color(0xFFFF8BB5)),
       home: HomeScreen(),
     );
   }

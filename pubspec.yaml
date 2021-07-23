@@ -1,4 +1,4 @@
-name: COVID19
+name: covid19
 description: An app to get latest information about COVID-19 Virus
 
 # The following defines the version and build number for your application.
@@ -20,17 +20,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http:
-  package_info:
-  cached_network_image:
+  http: any
+  package_info: any
+  cached_network_image: any
   webview_flutter: ^0.3.19+9
-  bezier_chart:
-  share:
-  provider:
-  flutter_money_formatter:
-  url_launcher:
-  flutter_launcher_icons:
-  get_it:
+  bezier_chart: any
+  share: any
+  provider: any
+  flutter_money_formatter: any
+  url_launcher: any
+  flutter_launcher_icons: any
+  get_it: any
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

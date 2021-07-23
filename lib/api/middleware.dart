@@ -1,5 +1,5 @@
-import 'package:COVID19/api/covid_api.dart';
-import 'package:COVID19/api/service.dart';
+import 'package:covid19/api/covid_api.dart';
+import 'package:covid19/api/service.dart';
 import 'package:http/http.dart' as http;
 
 class MiddleWare {

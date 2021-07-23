@@ -1,9 +1,9 @@
-import 'package:COVID19/api/service.dart';
-import 'package:COVID19/data.dart';
-import 'package:COVID19/models/case_model.dart';
-import 'package:COVID19/notifiers/country_notifier.dart';
-import 'package:COVID19/pages/search_country.dart';
-import 'package:COVID19/pages/single_country_stats.dart';
+import 'package:covid19/api/service.dart';
+import 'package:covid19/data.dart';
+import 'package:covid19/models/case_model.dart';
+import 'package:covid19/notifiers/country_notifier.dart';
+import 'package:covid19/pages/search_country.dart';
+import 'package:covid19/pages/single_country_stats.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -113,7 +113,7 @@ class _TopCountryState extends State<TopCountry> {
             } else
               _list = model.notes;
             return ListView.builder(
-              physics: BouncingScrollPhysics(),
+//              physics: BouncingScrollPhysics(),
               cacheExtent: 10,
               itemCount: _list.length,
               itemBuilder: (context, index) {

@@ -1,8 +1,8 @@
-import 'package:COVID19/api/service.dart';
-import 'package:COVID19/data.dart';
-import 'package:COVID19/models/case_model.dart';
-import 'package:COVID19/models/graph_model.dart';
-import 'package:COVID19/notifiers/graph_notifier.dart';
+import 'package:covid19/api/service.dart';
+import 'package:covid19/data.dart';
+import 'package:covid19/models/case_model.dart';
+import 'package:covid19/models/graph_model.dart';
+import 'package:covid19/notifiers/graph_notifier.dart';
 import 'package:bezier_chart/bezier_chart.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,12 +40,13 @@ class _CountryStatsState extends State<CountryStats>
     return ChangeNotifierProvider<GraphNotifier>(
       create: (context) => service<GraphNotifier>(),
       child: Scaffold(
-        resizeToAvoidBottomPadding: true,
+        // resizeToAvoidBottomPadding: true,
         appBar: AppBar(
           title: Text(widget._model.country),
           actions: <Widget>[
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 10.0),
               child: CachedNetworkImage(
                 imageUrl:
                     'https://www.countryflags.io/${widget._model.countryInfo.iso2}/flat/64.png',
@@ -65,6 +66,9 @@ class _CountryStatsState extends State<CountryStats>
             SizedBox(
               height: 10,
             ),
+
+
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[

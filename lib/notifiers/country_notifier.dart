@@ -1,9 +1,9 @@
+import 'package:covid19/api/middleware.dart';
+import 'package:covid19/api/service.dart';
+import 'package:covid19/data.dart';
+import 'package:covid19/models/case_model.dart';
 import 'package:http/http.dart'as http;
 import 'dart:convert';
-import 'package:COVID19/data.dart';
-import 'package:COVID19/api/middleware.dart';
-import 'package:COVID19/models/case_model.dart';
-import 'package:COVID19/api/service.dart';
 import 'package:flutter/cupertino.dart';
 
 class CountryNotifier extends ChangeNotifier{

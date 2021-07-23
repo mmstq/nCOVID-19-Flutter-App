@@ -1,5 +1,5 @@
-import 'package:COVID19/models/case_model.dart';
-import 'package:COVID19/pages/single_country_stats.dart';
+import 'package:covid19/models/case_model.dart';
+import 'package:covid19/pages/single_country_stats.dart';
 import 'package:flutter/material.dart';
 
 class SearchByCountry extends SearchDelegate {

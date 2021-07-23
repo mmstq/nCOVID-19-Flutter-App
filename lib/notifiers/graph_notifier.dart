@@ -1,9 +1,9 @@
-import 'package:COVID19/models/graph_model.dart';
+import 'package:covid19/models/graph_model.dart';
 import 'package:http/http.dart'as http;
 import 'dart:convert';
-import 'package:COVID19/data.dart';
-import 'package:COVID19/api/middleware.dart';
-import 'package:COVID19/api/service.dart';
+import 'package:covid19/data.dart';
+import 'package:covid19/api/middleware.dart';
+import 'package:covid19/api/service.dart';
 import 'package:flutter/cupertino.dart';
 
 class GraphNotifier extends ChangeNotifier{

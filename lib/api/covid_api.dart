@@ -1,8 +1,7 @@
 import 'dart:io';
-import 'package:COVID19/api/api_urls.dart';
-import 'package:COVID19/api/error_handling.dart';
-import 'package:COVID19/data.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:covid19/api/api_urls.dart';
+import 'package:covid19/api/error_handling.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class NoteAPI {
@@ -14,8 +13,7 @@ class NoteAPI {
   final _key = ApiURL.key;
   final _internalHostName = ApiURL.rapidHost;
   final _internalHostKey = ApiURL.rapidKey;
-  final _maskHost = ApiURL.maskUsageTipsHost;
-  final _maskUrl = ApiURL.maskUsageTips;
+
 
   Future<dynamic> get(String apiPath) async {
     http.Response _response;
@@ -29,8 +27,9 @@ class NoteAPI {
   }
 
   Future<dynamic> getHeadlines() async {
-    final dateTime = new DateTime.now().subtract(Duration(days: 5));
+    final dateTime = new DateTime.now().subtract(Duration(days: 10));
     final fromDate = '${dateTime.year}-${dateTime.month}-${dateTime.day}';
+    debugPrint(fromDate.toString());
     final path = 'https://newsapi.org/v2/top-headlines?q=COVID&from=$fromDate&sortBy=publishedAt&apiKey=${ApiURL.newsApiKey}&pageSize=10&page=1&country=in';
     http.Response _response;
     try {

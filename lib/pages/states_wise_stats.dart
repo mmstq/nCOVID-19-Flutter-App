@@ -1,8 +1,9 @@
-import 'package:COVID19/api/service.dart';
-import 'package:COVID19/data.dart';
-import 'package:COVID19/models/district_model.dart';
-import 'package:COVID19/models/state_model.dart';
-import 'package:COVID19/notifiers/states_notifier.dart';
+import 'package:covid19/api/service.dart';
+import 'package:covid19/data.dart';
+import 'package:covid19/models/district_model.dart';
+import 'package:covid19/models/state_model.dart';
+import 'package:covid19/notifiers/states_notifier.dart';
+import 'package:covid19/pages/india_map.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -37,9 +38,25 @@ class _StatesInfoState extends State<StatesInfo> {
       create: (_) => service<StatesNotifier>(),
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          title: Text("Indian States Tally"),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.map, color: Colors.white,),
+          tooltip: "COVID Map",
+          backgroundColor: Theme.of(context).primaryColorDark,
+          onPressed: (){
+            Navigator.of(context).push(MaterialPageRoute(builder: (_)=>CovidMap()));
+          },
         ),
+        /*appBar: AppBar(
+          title: Text("Indian States Tally"),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.map),
+              onPressed: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (_)=>CovidMap()));
+              },
+            )
+          ],
+        ),*/
         body: Consumer<StatesNotifier>(
           builder: (context, model, child) {
             _model = model;
@@ -64,7 +81,7 @@ class _StatesInfoState extends State<StatesInfo> {
               );
             } else
               return ListView.separated(
-                physics: BouncingScrollPhysics(),
+//                physics: BouncingScrollPhysics(),
                 separatorBuilder: (context, i) => Container(
                   height: 1,
                   color: Colors.grey.shade300,
